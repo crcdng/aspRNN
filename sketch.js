@@ -45,19 +45,20 @@ function setup () {
 
   console.log('ml5 version:', ml5.version);
 
-  charRnn = ml5.charRNN('models/woolf/', () => { modelLoaded = true; return modelLoaded; });
   displayExplanation();
 
   const url = getURL();
   const re = /\?frame/;
   if (re.test(url)) {
     console.log('static frame');
-    displayConsole(consoleOutput);
+    charRnn = ml5.charRNN('models/woolf/', () => { populateForm(formFields); });
+    displayConsole(consoleOutput, 0, false);
   } else {
     console.log('dynamic version');
-    displayConsole(consoleOutput, lineInterval);
+    charRnn = ml5.charRNN('models/woolf/', () => { modelLoaded = true; return modelLoaded; });
+    displayConsole(consoleOutput, lineInterval, true);
     setInterval(() => {
-      displayConsole(consoleOutput, lineInterval);
+      displayConsole(consoleOutput, lineInterval, true);
       formDiv.remove();
     }, mainInterval);
   }
@@ -376,16 +377,16 @@ function createCaptcha () {
   return createImg('assets/captcha.png', 'Are you human?').style('width', '148px');
 }
 
-function displayConsole (lines, interval) {
+function displayConsole (lines, interval, dynamic) {
   background(11);
   textFont(consoleFont);
   textSize(28);
   lines.forEach((line, i) => {
     setTimeout(() => {
       if (i === 10) {
-        alertConsoleLine(line, 20, 100 + 38 * i);
+        alertConsoleLine(line, 20, 100 + 38 * i, dynamic);
       } else {
-        displayConsoleLine(line, (i === 11 ? 1 : (i === 9 ? 5 : 3)), 20, 100 + 38 * i);
+        displayConsoleLine(line, (i === 11 ? 1 : (i === 9 ? 5 : 3)), 20, 100 + 38 * i, dynamic);
       }
       if (i === 3) { displayForm(form); }
       if (i === 6 && modelLoaded) { populateForm(formFields); }
@@ -393,8 +394,8 @@ function displayConsole (lines, interval) {
   });
 }
 
-function alertConsoleLine (line, x, y) {
-  const blinkInterval = 100;
+function alertConsoleLine (line, x, y, dynamic) {
+  const blinkInterval = dynamic ? 100 : 0;
   let visible = false;
   for (let r = 0; r < 6; r++) {
     setTimeout(() => {
@@ -409,9 +410,9 @@ function alertConsoleLine (line, x, y) {
   }
 }
 
-function displayConsoleLine (line, dots, x, y) {
+function displayConsoleLine (line, dots, x, y, dynamic) {
+  const dotInterval = dynamic ? 250 : 0;
   textSize(28);
-  const dotInterval = 250;
   fill(0, 102, 253, 255);
   for (let d = 1; d <= dots; d++) {
     setTimeout(() => {
