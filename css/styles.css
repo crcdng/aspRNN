@@ -1,0 +1,28 @@
+#container {
+  width: 100%;
+}
+
+#top {
+  float: left;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  box-sizing: border-box;
+}
+
+#left {
+  float: left;
+  left: 0;
+  width: 60%;
+  box-sizing: border-box;
+}
+
+#right {
+  float: left;
+  width: 34%;
+  right: 0;
+  box-sizing: border-box;
+}
+
+
+
